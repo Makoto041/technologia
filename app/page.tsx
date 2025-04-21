@@ -9,7 +9,7 @@ const AudioPlayer = dynamic(() => import("./components/AudioPlayer"), {
 
 export default function HomePage() {
   return (
-    <main className="flex items-center justify-center w-screen h-screen">
+    <main className="flex items-center justify-center w-screen h-screen p-6">
       <AudioPlayer />
     </main>
   );
