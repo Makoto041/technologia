@@ -1,14 +1,31 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+// Ensure AudioContext types are available
 import Image from "next/image";
 
 export default function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [volume, setVolume] = useState(1);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
 
   useEffect(() => {
-    audioRef.current && (audioRef.current.volume = volume);
+    if (audioRef.current && !audioCtxRef.current) {
+      const ctx = new AudioContext();
+      const source = ctx.createMediaElementSource(audioRef.current);
+      const gainNode = ctx.createGain();
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      audioCtxRef.current = ctx;
+      gainNodeRef.current = gainNode;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = volume;
+    }
   }, [volume]);
 
   const handlePlay = () => {
