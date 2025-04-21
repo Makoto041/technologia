@@ -28,10 +28,14 @@ export default function AudioPlayer() {
     }
   }, [volume]);
 
-  const handlePlay = () => {
+  const handlePlay = async () => {
     if (!audioRef.current) return;
+    // Resume AudioContext if suspended (required for mobile/production)
+    if (audioCtxRef.current?.state === "suspended") {
+      await audioCtxRef.current.resume();
+    }
     audioRef.current.currentTime = 0;
-    audioRef.current.play();
+    await audioRef.current.play();
   };
 
   return (
